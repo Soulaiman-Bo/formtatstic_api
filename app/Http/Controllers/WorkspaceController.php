@@ -2,65 +2,80 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\workspace;
 use App\Http\Requests\StoreworkspaceRequest;
 use App\Http\Requests\UpdateworkspaceRequest;
+use App\Http\Resources\WorkspaceResource;
+use Illuminate\Http\Request;
+use App\Models\Workspace;
+use Validator;
 
 class WorkspaceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // Display a listing of the workspaces
+    public function index(Request $request)
     {
-        //
+        $userId = $request->user()->id;
+        $workspaces = Workspace::where('owner_id', $userId)->get();
+        return response()->json(WorkspaceResource::collection($workspaces));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreworkspaceRequest $request)
     {
-        //
+        $workspaceData = $request->validated();
+        $workspace = new Workspace($workspaceData);
+        $workspace->owner_id = $request->user()->id;
+        $workspace->save();
+
+        return response()->json(new WorkspaceResource($workspace), 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(workspace $workspace)
+    public function show(Request $request, $id)
     {
-        //
+        $userId = $request->user()->id;
+        $workspace = Workspace::where('id', $id)
+            ->where('owner_id', $userId)
+            ->first();
+
+        if (!$workspace) {
+            return response()->json(['message' => 'Workspace not found'], 404);
+        }
+
+        return response()->json(new WorkspaceResource($workspace));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(workspace $workspace)
+    // Update the specified workspace
+    public function update(StoreworkspaceRequest $request, $id)
     {
-        //
+        $userId = $request->user()->id;
+        $workspace = Workspace::where('id', $id)
+            ->where('owner_id', $userId)
+            ->first();
+
+        if (!$workspace) {
+            return response()->json(['message' => 'Workspace not found'], 404);
+        }
+
+        $workspace->update($request->validated());
+
+        return response()->json(new WorkspaceResource($workspace));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateworkspaceRequest $request, workspace $workspace)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(workspace $workspace)
+    // Remove the specified workspace
+    public function destroy(Request $request, $id)
     {
-        //
+        $userId = $request->user()->id;
+
+        $workspace = Workspace::where('id', $id)
+            ->where('owner_id', $userId)
+            ->first();
+
+        if (!$workspace) {
+            return response()->json(['message' => 'Workspace not found'], 404);
+        }
+
+        $workspace->delete();
+
+        return response()->json(['message' => 'Workspace deleted']);
     }
 }
