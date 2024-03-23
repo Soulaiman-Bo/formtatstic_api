@@ -5,6 +5,7 @@ use App\Http\Controllers\auth\ResetPasswordController;
 use App\Http\Controllers\auth\SendEmailVerificationEmail;
 use App\Http\Controllers\auth\SendPasswordResetLinkController;
 use App\Http\Controllers\auth\VerifyEmailController;
+use App\Http\Controllers\FormController;
 use App\Http\Controllers\WorkspaceController;
 use Illuminate\Support\Facades\Route;
 
@@ -56,6 +57,8 @@ Route::middleware('auth:api')->group(function (){
 // workspaces routes 
 Route::middleware('auth:api')->group(function (){
     Route::apiResource('workspaces', WorkspaceController::class);
+    Route::apiResource('forms', FormController::class);
+
 });
 
 
