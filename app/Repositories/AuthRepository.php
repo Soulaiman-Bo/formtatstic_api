@@ -29,4 +29,22 @@ class AuthRepository implements AuthRepositoryInterface
     {
         // Implement login logic
     }
+
+    public function createToken($request)
+    {
+        $token = $request->user()->createToken('newTokenName')->plainTextToken;
+        return $token;
+    }
+
+    public function deleteToken($request)
+    {
+        $request->user()->currentAccessToken()->delete();
+    }
+
+    public function refresh($request)
+    {
+        $this->deleteToken($request);
+        $token = $this->createToken($request);
+        return  $token;
+    }
 }

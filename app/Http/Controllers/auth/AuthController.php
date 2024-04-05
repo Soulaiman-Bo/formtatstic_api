@@ -57,4 +57,27 @@ class AuthController extends Controller
             'token_type' => 'bearer',
         ]);
     }
+
+    public function me(Request $request)
+    {
+        return $request->user();
+    }
+
+    public function logout(Request $request)
+    {
+        $this->authRepository->deleteToken($request);
+        return response()->json(['message' => 'Successfully logged out']);
+    }
+
+
+    public function refresh(Request $request)
+    {
+
+        $token = $this->authRepository->refresh($request);
+
+        return response()->json([
+            'message' => 'Token refreshed successfully',
+            'token' => $token
+        ]);
+    }
 }

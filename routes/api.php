@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\auth\AuthController;
+use App\Http\Controllers\auth\ResetPasswordController;
+use App\Http\Controllers\auth\SendPasswordResetLinkController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -19,7 +21,15 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, "register"])->name("register");
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
+Route::post('/forgotpassword', SendPasswordResetLinkController::class)->name('password.email');
+Route::post('/resetpassword', ResetPasswordController::class)->name('password.reset');
 
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/refresh', [AuthController::class, 'refresh']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/me', [AuthController::class, 'me']);
+});
 
 Route::get('/ping', function (Request  $request) {
     $connection = DB::connection('mongodb');
@@ -35,6 +45,3 @@ Route::get('/ping', function (Request  $request) {
 
 
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
