@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\SendPasswordResetLinkRequest;
+use App\Http\Requests\SendPasswordResetLinkRequest;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
