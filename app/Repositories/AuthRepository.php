@@ -15,11 +15,11 @@ class AuthRepository implements AuthRepositoryInterface
             return ['error' => 'User already exists.'];
         }
 
-        // Continue with user creation if not exists
         $user = User::create([
-            'name' => $data['name'],
+            'firstname' => $data['firstname'],
+            'lastname' => $data['lastname'],
             'email' => $data['email'],
-            'password' => bcrypt($data['password']),
+            'password' => bcrypt($data['password'])
         ]);
 
         return $user;
