@@ -5,70 +5,67 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreworkspaceRequest;
 use App\Http\Resources\WorkspaceResource;
 use App\Models\Workspace;
+use App\Repositories\WorkspaceRepositoryInterface;
 use Illuminate\Http\Request;
 
 class WorkspaceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $workspaceRepository;
+
+    public function __construct(WorkspaceRepositoryInterface $workspaceRepository)
+    {
+        $this->workspaceRepository = $workspaceRepository;
+    }
+
     public function index(Request $request)
     {
         $userId = $request->user()->id;
-        $workspaces = Workspace::where('owner_id', $userId)->get();
+        $workspaces = $this->workspaceRepository->findByOwner($userId);
         return response()->json(WorkspaceResource::collection($workspaces));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreworkspaceRequest $request)
     {
         $workspaceData = $request->validated();
-        $workspace = new Workspace($workspaceData);
-        $workspace->owner_id = $request->user()->id;
-        $workspace->save();
-
+        $workspace = $this->workspaceRepository->store($workspaceData, $request->user()->id);
         return response()->json(new WorkspaceResource($workspace), 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Workspace $workspace)
+    public function show(Request $request, $id)
     {
-        //
+        $userId = $request->user()->id;
+        $workspace = $this->workspaceRepository->find($id, $userId);
+
+        if (!$workspace) {
+            return response()->json(['message' => 'Workspace not found'], 404);
+        }
+
+        return response()->json(new WorkspaceResource($workspace));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Workspace $workspace)
+    public function update(StoreworkspaceRequest $request, $id)
     {
-        //
+        $userId = $request->user()->id;
+        $workspace = $this->workspaceRepository->find($id, $userId);
+
+        if (!$workspace) {
+            return response()->json(['message' => 'Workspace not found'], 404);
+        }
+
+        $updatedWorkspace = $this->workspaceRepository->update($workspace, $request->validated());
+        return response()->json(new WorkspaceResource($updatedWorkspace));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Workspace $workspace)
+    public function destroy(Request $request, $id)
     {
-        //
-    }
+        $userId = $request->user()->id;
+        $workspace = $this->workspaceRepository->find($id, $userId);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Workspace $workspace)
-    {
-        //
+        if (!$workspace) {
+            return response()->json(['message' => 'Workspace not found'], 404);
+        }
+
+        $this->workspaceRepository->delete($workspace);
+        return response()->json(['message' => 'Workspace deleted']);
     }
 }
