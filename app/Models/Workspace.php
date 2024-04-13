@@ -23,4 +23,9 @@ class Workspace extends Model
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
+
+    public function forms()
+    {
+        return $this->hasMany(Form::class);
+    }
 }

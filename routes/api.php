@@ -3,6 +3,7 @@
 use App\Http\Controllers\auth\AuthController;
 use App\Http\Controllers\auth\ResetPasswordController;
 use App\Http\Controllers\auth\SendPasswordResetLinkController;
+use App\Http\Controllers\FormController;
 use App\Http\Controllers\WorkspaceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -46,8 +47,10 @@ Route::get('/ping', function (Request  $request) {
 
 Route::middleware('auth:api')->group(function (){
     Route::apiResource('workspaces', WorkspaceController::class);
-    // Route::apiResource('forms', FormController::class);
+    Route::apiResource('workspaces.forms', FormController::class);
 });
+
+
 
 
 
