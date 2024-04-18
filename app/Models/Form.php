@@ -18,7 +18,8 @@ class Form extends Model
         'visits',
         'submittions',
         'fields',
-        'published'
+        'published',
+        'owner_id'
     ];
 
     protected $casts = [
@@ -29,5 +30,15 @@ class Form extends Model
     public function workspace()
     {
         return $this->belongsTo(Workspace::class);
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function formschema()
+    {
+        return $this->hasMany(FormSchema::class);
     }
 }

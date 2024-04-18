@@ -68,4 +68,6 @@ class WorkspaceController extends Controller
         $this->workspaceRepository->delete($workspace);
         return response()->json(['message' => 'Workspace deleted']);
     }
+
+    
 }

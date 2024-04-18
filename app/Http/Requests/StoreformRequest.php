@@ -23,12 +23,13 @@ class StoreformRequest extends FormRequest
     {
         return [
             'workspace_id' => 'required|exists:workspaces,_id',
+            'owner_id' => 'required|exists:users,_id',
             'name' => 'required|string|max:255|min:2',
             'description' => 'nullable|string|min:2|max:1000',
             'visits' => 'sometimes|integer|min:0',
             'submittions' => 'sometimes|integer|min:0',
             'fields' => 'nullable|json',
-            'published' => 'required|in:true,false',
+            'published' => 'sometimes|in:true,false',
         ];
     }
     
@@ -56,7 +57,6 @@ class StoreformRequest extends FormRequest
 
         'fields.json' => 'The fields must be a valid JSON format.',
 
-        'published.required' => 'The published status is required.',
         'published.in' => 'The published status must be either true or false.',
     ];
 }
