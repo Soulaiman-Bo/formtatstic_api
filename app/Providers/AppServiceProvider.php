@@ -7,6 +7,8 @@ use App\Repositories\AuthRepositoryInterface;
 
 use Illuminate\Support\ServiceProvider;
 use App\Models\Sanctum\PersonalAccessToken;
+use App\Repositories\FormSchemaRepository;
+use App\Repositories\FormSchemaRepositoryInterface;
 use App\Repositories\WorkspaceRepository;
 use App\Repositories\WorkspaceRepositoryInterface;
 use Illuminate\Foundation\AliasLoader;
@@ -29,6 +31,13 @@ class AppServiceProvider extends ServiceProvider
             WorkspaceRepositoryInterface::class,
             WorkspaceRepository::class
         );
+
+        $this->app->bind(
+            FormSchemaRepositoryInterface::class,
+            FormSchemaRepository::class
+        );
+
+ 
     }
 
     /**

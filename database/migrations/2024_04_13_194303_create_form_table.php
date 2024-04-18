@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('workspace_id');
             $table->string('name');
+            $table->unsignedBigInteger('owner_id');
             $table->string('description')->nullable();
             $table->integer('visits')->default(0);
             $table->integer('submittions')->default(0);
@@ -22,6 +23,7 @@ return new class extends Migration
             $table->enum('published', ['true', 'false'])->default('false');
             $table->timestamps();
             $table->foreign('workspace_id')->references('id')->on('workspaces')->onDelete('cascade');
+            $table->foreign('owner_id')->references('id')->on('users');
         });
     }
 
