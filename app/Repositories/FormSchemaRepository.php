@@ -26,6 +26,20 @@ class FormSchemaRepository  implements FormSchemaRepositoryInterface
         }
     }
 
+    public function update(array $data, $id)
+    {
+        $formSchema = FormSchema::find($id);
+        if ($formSchema) {
+            $formSchema->update($data);
+            return $formSchema;
+        }
+        return null;
+    }
+
+
+
+
+
     
 
 }

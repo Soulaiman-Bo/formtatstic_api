@@ -53,15 +53,26 @@ class FormSchemaController extends Controller
         }
 
         return response()->json($form->formschema, 201);
-
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, FormSchema $formSchema)
+    public function update(FormSchemaRequest $request, $formId, $formSchemaId)
     {
-        //
+        $formSchema =  FormSchema::with('form')->find($formSchemaId);
+
+        if (!$formSchema) {
+            return response()->json(['message' => 'Form schema not found'], 404);
+        }
+
+        if ($request->user()->id != $formSchema->form->owner_id) {
+            return response()->json(['message' => 'Unauthorized access'], 403);
+        }
+
+        $formSchema->update($request->validated());
+
+        return response()->json($formSchema, 201);
     }
 
     /**
